@@ -2,7 +2,7 @@
 # it include two major parts: (1) install the SGE packages (2) configure the mater node
 
 # part 1: installation of SGE packages
-sudo apt-get update
+sudo apt-get -o Acquire::Check-Valid-Until=false update
 sudo apt-get install debconf-utils -y # for apt-get unattended installations
 
 echo "gridengine-qmon       shared/gridenginemaster string  gwb-grid-mm" | sudo debconf-set-selections

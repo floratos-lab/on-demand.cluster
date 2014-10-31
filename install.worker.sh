@@ -1,5 +1,5 @@
 # install and set up SGE worker node
-sudo apt-get update
+sudo apt-get -o Acquire::Check-Valid-Until=false update
 
 # unattended
 echo "gridengine-exec       shared/gridenginemaster string  gwb-grid-mm" | sudo debconf-set-selections
