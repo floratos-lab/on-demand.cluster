@@ -6,7 +6,7 @@ readonly PROJECT_ID=wise-mantra-567 # project name: geworkbench-Web
 readonly INSTANCE_ZONE=us-central1-a
 readonly INSTANCE_NAME=zj-test-instance
 
-readonly ARACNE_SCRIPT=./run.aracne.sh
+readonly ARACNE_SCRIPT=./aracne_submit.sh
 readonly ARACNE_SOFTWARE_PACKAGE="./aracne2 ./usage.txt"
 readonly EXPRESSION_DATA_FILE=./Bcell-100.exp
 readonly HUBFILE=./hub.txt
@@ -28,7 +28,7 @@ gcloud compute ssh $INSTANCE_NAME --zone $INSTANCE_ZONE --command $ARACNE_SCRIPT
 # copy the result back
 rm -r -f results
 mkdir results
-gcloud compute copy-files $INSTANCE_NAME:~/output.* $INSTANCE_NAME:~/*.adj ./results --zone $INSTANCE_ZONE
+gcloud compute copy-files $INSTANCE_NAME:~/output.* $INSTANCE_NAME:~/*.adj $INSTANCE_NAME:~/adjfiles $INSTANCE_NAME:~/logs ./results --zone $INSTANCE_ZONE
 
 # delete the VM instance
 gcloud compute instances delete $INSTANCE_NAME --zone $INSTANCE_ZONE -q
