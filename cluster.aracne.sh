@@ -36,8 +36,7 @@ for ((i = 0; i < $WORKER_NODE_COUNT; i++)) do
   gcloud compute copy-files ./install.worker.sh $(worker_node_name $i):~/. --zone=$WORKER_NODE_ZONE
   gcloud compute ssh $(worker_node_name $i) --zone=$WORKER_NODE_ZONE --command ./install.worker.sh
 
-  # QUESTION?? what is really needed to be copied to the workers? We should choose the more efficient way to do it. Not just working
-  #gcloud compute copy-files $ARACNE_SCRIPT $ARACNE_SOFTWARE_PACKAGE $EXPRESSION_DATA_FILE $HUBFILE $ARACNE_CONFIG_FILE $(worker_node_name $i):~/. --zone $INSTANCE_ZONE
+  gcloud compute copy-files $ARACNE_SOFTWARE_PACKAGE $EXPRESSION_DATA_FILE $HUBFILE $ARACNE_CONFIG_FILE $(worker_node_name $i):~/. --zone $INSTANCE_ZONE
 done
 
 ### end of section copied from cluster.exp.h
@@ -53,12 +52,21 @@ echo finished copying `date`
 # run aracne
 gcloud compute ssh $INSTANCE_NAME --zone $INSTANCE_ZONE --command "qsub ./aracne_submit.sh"
 
+# check status
+QSTAT_COUNT="-1"
+while [ "$QSTAT_COUNT" -ne "0" ]
+do
+    sleep 30
+    QSTAT_COUNT=$(gcloud compute ssh $INSTANCE_NAME --zone $INSTANCE_ZONE --command "qstat|wc -c")
+    echo $QSTAT_COUNT
+done
+
 # copy the result back
 rm -r -f results
 mkdir results
 #gcloud compute copy-files $INSTANCE_NAME:~/output.* $INSTANCE_NAME:~/*.adj $INSTANCE_NAME:~/adjfiles $INSTANCE_NAME:~/logs ./results --zone $INSTANCE_ZONE
 for ((i = 0; i < $WORKER_NODE_COUNT; i++)) do
-    gcloud compute copy-files $(worker_node_name $i):~/aracne.log.* $(worker_node_name $i):~/adjfiles $(worker_node_name $i):~/logs ./results --zone $INSTANCE_ZONE
+    gcloud compute copy-files $(worker_node_name $i):~/aracne.log $(worker_node_name $i):~/adjfiles $(worker_node_name $i):~/logs ./results --zone $INSTANCE_ZONE
 done
 
 # delete the VM instance
