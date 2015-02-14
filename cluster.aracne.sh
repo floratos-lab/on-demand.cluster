@@ -46,7 +46,8 @@ readonly INSTANCE_NAME=$MASTER_NODE_NAME_PATTERN
 
 echo start copying files `date`
 # copy program files and data files
-gcloud compute copy-files $ARACNE_SCRIPT $ARACNE_SOFTWARE_PACKAGE $EXPRESSION_DATA_FILE $HUBFILE $ARACNE_CONFIG_FILE $INSTANCE_NAME:~/. --zone $INSTANCE_ZONE
+# notice that contrib is a directory tree
+gcloud compute copy-files $ARACNE_SCRIPT $ARACNE_SOFTWARE_PACKAGE $EXPRESSION_DATA_FILE $HUBFILE $ARACNE_CONFIG_FILE consensus_submit.sh getconsensusnet.pl contrib $INSTANCE_NAME:~/. --zone $INSTANCE_ZONE
 echo finished copying `date`
 
 # run aracne
@@ -61,16 +62,28 @@ do
     echo $QSTAT_COUNT
 done
 
-# copy the result back
+# copy all the results to the master - not the most brilliant way, but just do this for now
 rm -r -f results
 mkdir results
-#gcloud compute copy-files $INSTANCE_NAME:~/output.* $INSTANCE_NAME:~/*.adj $INSTANCE_NAME:~/adjfiles $INSTANCE_NAME:~/logs ./results --zone $INSTANCE_ZONE
 for ((i = 0; i < $WORKER_NODE_COUNT; i++)) do
-    gcloud compute copy-files $(worker_node_name $i):~/aracne.log $(worker_node_name $i):~/adjfiles $(worker_node_name $i):~/logs ./results --zone $INSTANCE_ZONE
+    gcloud compute copy-files $(worker_node_name $i):~/adjfiles ./results --zone $INSTANCE_ZONE
+    gcloud compute copy-files ./results/adjfiles $INSTANCE_NAME:~/. --zone $INSTANCE_ZONE
 done
+
+# do consensus network (post-processing)
+#if n>1
+# the original approach submits this to the cluster, but it does not make sense because it is only one job.
+#gcloud compute ssh $INSTANCE_NAME --zone $INSTANCE_ZONE --command "qsub ./consensus_submit.sh"
+gcloud compute ssh $INSTANCE_NAME --zone $INSTANCE_ZONE --command "perl ./getconsensusnet.pl adjfiles 1.0E-6 > consensus.log"
+
+# copy the result back
+rm -r -f consensus_result
+mkdir consensus_result
+gcloud compute copy-files $INSTANCE_NAME:~/adjfiles_*.adj $INSTANCE_NAME:~/adjfiles_*.txt $INSTANCE_NAME:~/consensus.log ./consensus_result --zone $INSTANCE_ZONE
 
 # delete the VM instance
 #gcloud compute instances delete $INSTANCE_NAME --zone $INSTANCE_ZONE -q
+./cluster_setup.sh down-full
 
 # check the results
-ls -lt results/
+ls -lt consensus_result/
