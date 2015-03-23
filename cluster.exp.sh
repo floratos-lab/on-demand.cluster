@@ -22,8 +22,8 @@ for ((i = 0; i < $WORKER_NODE_COUNT; i++)) do
   gcloud compute ssh $(worker_node_name $i) --zone=$WORKER_NODE_ZONE --command ./install.worker.sh
 done
 
-# log in to the master to do the test
-gcloud compute ssh $MASTER_NODE_NAME_PATTERN --zone=$MASTER_NODE_ZONE
+# submit test jobs on the master
+gcloud compute ssh $MASTER_NODE_NAME_PATTERN --zone=$MASTER_NODE_ZONE --command ./test.sh
 # log in to two workers to check the result
 gcloud compute ssh $(worker_node_name 0) --zone=$WORKER_NODE_ZONE
 gcloud compute ssh $(worker_node_name 1) --zone=$WORKER_NODE_ZONE
