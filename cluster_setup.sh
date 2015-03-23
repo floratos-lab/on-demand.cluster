@@ -167,17 +167,16 @@ function add_master_node() {
 
   ( export BPID=$(sh -c 'echo $PPID');
     exec \
-      gcutil addinstance "$name" \
+      gcloud compute instances create "$name" \
         --zone=${MASTER_NODE_ZONE} \
-        --disk="${boot_disk},boot" \
-        --disk="${data_disk}" \
-        --machine_type=${MASTER_NODE_MACHINE_TYPE} \
-        --network=${CLUSTER_NETWORK} \
-        --metadata="cluster-master:${masters}" \
-        --metadata_from_file=startup-script:instance_startup_script.sh \
-        --service_account_scopes=${MASTER_NODE_SCOPE} \
+        --disk name="${boot_disk}" boot=yes \
+        --disk name="${data_disk}" \
+        --machine-type ${MASTER_NODE_MACHINE_TYPE} \
+        --network ${CLUSTER_NETWORK} \
+        --metadata "cluster-master=${masters}" \
+        --metadata-from-file startup-script=instance_startup_script.sh \
     1> ${SCRIPT_LOG_DIR}/${BPID}.out.log \
-    2> ${SCRIPT_LOG_DIR}/${BPID}.err.log ) &
+    2> ${SCRIPT_LOG_DIR}/${BPID}.err.log) &
 }
 readonly -f add_master_node
 
@@ -192,17 +191,16 @@ function add_worker_node() {
 
   ( export BPID=$(sh -c 'echo $PPID');
     exec \
-      gcutil addinstance "$name" \
+      gcloud compute instances create "$name" \
         --zone=${WORKER_NODE_ZONE} \
-        --disk="${boot_disk},boot" \
-        --disk="${data_disk}" \
-        --machine_type=${WORKER_NODE_MACHINE_TYPE} \
-        --network=${CLUSTER_NETWORK} \
-        --metadata="cluster-master:${masters}" \
-        --metadata_from_file=startup-script:instance_startup_script.sh \
-        --service_account_scopes=${WORKER_NODE_SCOPE} \
+        --disk name="${boot_disk}" boot=yes \
+        --disk name="${data_disk}" \
+        --machine-type ${WORKER_NODE_MACHINE_TYPE} \
+        --network ${CLUSTER_NETWORK} \
+        --metadata "cluster-master=${masters}" \
+        --metadata-from-file startup-script=instance_startup_script.sh \
     1> ${SCRIPT_LOG_DIR}/${BPID}.out.log \
-    2> ${SCRIPT_LOG_DIR}/${BPID}.err.log ) &
+    2> ${SCRIPT_LOG_DIR}/${BPID}.err.log) &
 }
 readonly -f add_worker_node
 
@@ -219,15 +217,15 @@ function get_delete_list() {
 
   # in_list should be space separated
   # Replace spaces with pipes (|)
-
+  
   local filter=$(echo $in_list | tr ' ' '|')
-  local result=$(gcutil list${in_type} --format=names \
-                                       --sort_by=name \
-                                       --filter="name eq ($filter)")
+  local result=$(gcloud compute ${in_type} list \
+                                       --sort-by name \
+                                       --regexp "($filter)")
 
   # Names come back zone/type/name
   # Return just the names
-  echo -n "$result" | awk -F / '{print $3}' | sort
+  echo -n "$result" | awk 'NR>1{print $1}' | sort
 }
 readonly -f get_delete_list
 
@@ -256,24 +254,24 @@ mkdir -p $SCRIPT_LOG_DIR
 if [[ $OPERATION =~ ^up ]]; then
   if [[ $full == 1 ]]; then
     echo "Creating master boot disk(s): ${MASTER_BOOT_DISK_LIST}"
-    gcutil adddisk ${MASTER_BOOT_DISK_LIST} \
+    gcloud compute disks create ${MASTER_BOOT_DISK_LIST} \
       --zone=$MASTER_NODE_ZONE \
-      --source_image=$MASTER_NODE_IMAGE
+      --image=$MASTER_NODE_IMAGE
 
     echo "Creating master data disk(s): ${MASTER_DATA_DISK_LIST}"
-    gcutil adddisk ${MASTER_DATA_DISK_LIST} \
+    gcloud compute disks create ${MASTER_DATA_DISK_LIST} \
       --zone=$MASTER_NODE_ZONE \
-      --size_gb=$MASTER_NODE_DISK_SIZE_GB
+      --size=$MASTER_NODE_DISK_SIZE_GB
 
     echo "Creating worker boot disk(s): ${WORKER_BOOT_DISK_LIST}"
-    gcutil adddisk ${WORKER_BOOT_DISK_LIST} \
+    gcloud compute disks create ${WORKER_BOOT_DISK_LIST} \
       --zone=$WORKER_NODE_ZONE \
-      --source_image=$WORKER_NODE_IMAGE
+      --image=$WORKER_NODE_IMAGE
 
     echo "Creating worker data disk(s): ${WORKER_DATA_DISK_LIST}"
-    gcutil adddisk ${WORKER_DATA_DISK_LIST} \
+    gcloud compute disks create ${WORKER_DATA_DISK_LIST} \
       --zone=$WORKER_NODE_ZONE \
-      --size_gb=$WORKER_NODE_DISK_SIZE_GB
+      --size=$WORKER_NODE_DISK_SIZE_GB
   fi
 
   for ((i = 0; i < $MASTER_NODE_COUNT; i++)) do
@@ -302,7 +300,7 @@ if [[ $OPERATION =~ ^up ]]; then
 
   # Emit list of hosts in the cluster:
   filter=$(echo $MASTER_NODE_LIST $WORKER_NODE_LIST | tr ' ' '|')
-  gcutil listinstances --filter="name eq ($filter)"
+  gcloud compute instances list --filter="name eq ($filter)"
 
 elif [[ $OPERATION =~ ^down ]]; then
   # Get the list of instances to delete
@@ -314,7 +312,7 @@ elif [[ $OPERATION =~ ^down ]]; then
     echo "Deleting instances:"
     echo "$INSTANCE_DELETE_LIST" | sed -e 's/^/  /'
 
-    gcutil deleteinstance --force --nodelete_boot_pd $INSTANCE_DELETE_LIST
+    gcloud compute instances delete --quiet $INSTANCE_DELETE_LIST --zone="$MASTER_NODE_ZONE"
   else
     echo "No instances to delete"
   fi
@@ -331,7 +329,7 @@ elif [[ $OPERATION =~ ^down ]]; then
     echo "$DISK_DELETE_LIST" | sed -e 's/^/  /'
 
     if [[ -n $DISK_DELETE_LIST ]]; then
-      gcutil deletedisk --force $DISK_DELETE_LIST
+      gcloud compute disks delete --quiet $DISK_DELETE_LIST --zone="$MASTER_NODE_ZONE"
     else
       echo "No disks to delete"
     fi
