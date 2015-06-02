@@ -2,7 +2,7 @@
 
 *(draft under construction)*
 
-Using Google Cloud Platform, you can run intensively computational task, e.g. ARACNE or CINCY, as long as you have internet connect, and pay for the resource that you actually use. You have the flexbility of choosing proper computing power (cores, memories) for each individual execuation.
+Using Google Cloud Platform, you can run intensively computational task, e.g. ARACNE or CINDY, as long as you have internet connect, and pay for the resource that you actually use. You have the flexbility of choosing proper computing power (cores, memories) for each individual execuation.
 
 You also have the option of using persistent disk so you don't have to transfer and/or preprocess the data every time, but it is left out of this tutorial assuming we would like to keep the cost to zero when we are not doing anything.
 
@@ -28,6 +28,6 @@ You need to have following items ready before you use Google Cloud Platform:
 
   2. Execute the script.
 
-## How to run CINCY
+## How to run CINDY
 
 *TO DO*
