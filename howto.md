@@ -24,9 +24,11 @@ You need to have following items ready before you use Google Cloud Platform:
 
 ## How to run ARACNE
 
-  1. Download the script and jar file.
+  1. Download <a href="https://github.com/geworkbench-group/on-demand.cluster/blob/f302482b65f6944d36d4680f1440a3744ceae82d/cloud.aracne.java.sh">the script</a>, in which you need to change the variable PROJECT_ID to your own project ID, and jar file (that is to be provided seprately).
 
-  2. Execute the script.
+  2. Execute the script from a command prompt, e.g. cmd.exe on Windows.
+  3. Check the result from the directory called *results*.
+  
 
 ## How to run CINDY
 
