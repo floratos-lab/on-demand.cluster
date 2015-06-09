@@ -31,7 +31,7 @@ This step is a little annoying, but you only need to do it once.
   1. Download <a href="https://github.com/geworkbench-group/on-demand.cluster/blob/f302482b65f6944d36d4680f1440a3744ceae82d/cloud.aracne.java.sh">the script</a>, in which you need to change the variable PROJECT_ID to your own project ID, and jar file (that is to be provided seprately).
 
   2. Execute the script from a command prompt, e.g. cmd.exe on Windows.
-  3. Check the result from the directory called *results*. Within *results*, there are a subdirectory called *logs* for the log file, and one named after the input data for the actual network result.
+  3. Check the result from the directory called *results*. If the job succeeds, you will see a file *results/result.txt*, which is the main output of the ARACNe java program.
   
 
 ## How to run CINDY
