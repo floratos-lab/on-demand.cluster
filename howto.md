@@ -22,12 +22,16 @@ You need to have following items ready before you use Google Cloud Platform:
 
   <a href="https://cloud.google.com/sdk/gcloud/reference/auth/login">gcloud auth login</a>
 
+When you are asked to enter a passphrase for the key file, just enter nothing; otherwise, the process automated by the script will be interrupted many time asking for the passphrase. 
+
+This step is a little annoying, but you only need to do it once.
+
 ## How to run ARACNE
 
   1. Download <a href="https://github.com/geworkbench-group/on-demand.cluster/blob/f302482b65f6944d36d4680f1440a3744ceae82d/cloud.aracne.java.sh">the script</a>, in which you need to change the variable PROJECT_ID to your own project ID, and jar file (that is to be provided seprately).
 
   2. Execute the script from a command prompt, e.g. cmd.exe on Windows.
-  3. Check the result from the directory called *results*.
+  3. Check the result from the directory called *results*. Within *results*, there are a subdirectory called *logs* for the log file, and one named after the input data for the actual network result.
   
 
 ## How to run CINDY
