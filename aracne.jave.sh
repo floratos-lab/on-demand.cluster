@@ -1,7 +1,7 @@
 # this is based on cloud.aracne.java.sh but allows the actual jar file, data file, and parameters
 
 # instruction: this is how you run this script with some actual parameters
-# $ ./aracne.java.sh wise-mantra-567 "java -jar aracne_1.1.jar -e coad_fix_first3genes.exp -o output -t tfs -p 0.05 -s 0"
+# $ ./aracne.java.sh wise-mantra-567 aracne_1.1.jar coad_fix_first3genes.exp "coad_fix_first3genes.exp -o output -t tfs -p 0.05 -s 0"
 # where $1 is the Google Cloud project ID; $2 is the complete java command with all the parameters and the options, quoted.
 
 if [ $# -ne 2 ]
