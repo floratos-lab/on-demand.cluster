@@ -34,7 +34,7 @@ gcloud compute ssh $INSTANCE_NAME --zone $INSTANCE_ZONE --command "java -version
 
 # run aracne
 FULL_COMMAND="java -jar $EXECUTABLE_JAR -e $EXP_FILE $OTHER_PARAMETERS > result.txt"
-echo comment to be execuated: $FULL_COMMAND
+echo "The command to be execuated: $FULL_COMMAND"
 gcloud compute ssh $INSTANCE_NAME --zone $INSTANCE_ZONE --command "$FULL_COMMAND"
 
 # copy the result back
