@@ -5,5 +5,7 @@ This is an experimental project of dynamically creating SGE cluster on the platf
 
 See https://cloud.google.com/compute/
 
+Because Google Cloud is under active development, it is a good idea to run `gcloud components update` once in a while.
+
 ###Environment
 The scripts are tested using cygwin on Windows (GNU bash, version 4.1.17). I assume that they work the same way on any normal Linux/UNIX systems. You also must have Google Cloud SDK installed before being able to run the scripts.
