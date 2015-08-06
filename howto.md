@@ -41,3 +41,5 @@ This step is a little annoying, but you only need to do it once.
 ## How to run CINDY
 
 When CINDY is packaged as an executable jar file, it can be execuated using the same script as aracna.java.sh.
+
+In case the script does not finish for any reason, you may want to run `./cluster_setup.sh down-full` to make sure no VM instance and/or disk left there that causes charge from Google.
