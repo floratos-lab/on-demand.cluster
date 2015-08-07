@@ -2,8 +2,8 @@
 # it include two major parts: (1) install the SGE packages (2) configure the mater node
 
 # part 1: installation of SGE packages
-sudo apt-get -o Acquire::Check-Valid-Until=false update
-sudo apt-get install debconf-utils -y # for apt-get unattended installations
+sudo DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Check-Valid-Until=false update
+sudo DEBIAN_FRONTEND=noninteractive apt-get install debconf-utils -y # for apt-get unattended installations
 
 echo "gridengine-qmon       shared/gridenginemaster string  gwb-grid-mm" | sudo debconf-set-selections
 echo "gridengine-qmon       shared/gridengineconfig boolean true" | sudo debconf-set-selections
@@ -11,7 +11,6 @@ echo "gridengine-qmon       shared/gridengineconfig boolean true" | sudo debconf
 sudo DEBIAN_FRONTEND=noninteractive apt-get install gridengine-common gridengine-client gridengine-qmon gridengine-master -y
 
 # part 2: configuration of SGE master node
-
 sudo sudo -u sgeadmin qconf -am $USER
 qconf -au $USER users
 qconf -as $(hostname)
@@ -80,10 +79,13 @@ EOL
 sudo qconf -Aq ./grid
 rm ./grid
 
-qconf -aattr queue hostlist @allhosts main.q
 qconf -aattr queue slots "4, [$(hostname)=3]" main.q
 
 qconf -as gwb-grid-ww-0
 qconf -as gwb-grid-ww-1
 qconf -aattr hostgroup hostlist gwb-grid-ww-0 @allhosts
 qconf -aattr hostgroup hostlist gwb-grid-ww-1 @allhosts
+
+# install Java
+sudo DEBIAN_FRONTEND=noninteractive apt-get -y install openjdk-7-jre
+java -version 2> java.version.txt
