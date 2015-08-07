@@ -30,12 +30,12 @@ This step is a little annoying, but you only need to do it once.
 
   1. Download <a href="https://raw.githubusercontent.com/geworkbench-group/on-demand.cluster/master/aracne.java.sh">the script aracne.java.sh</a>, in which you need to change the variable PROJECT_ID to your own project ID, other scripts called from aracne.java.sh (cluster_properties.sh, cluster_setup.sh, install.sge.master.h, install.worker.sh), and Aracne.jar (that is to be provided seprately). (An earlier script called cloud.aracne.java.sh has everything hard-coded in. You may not want to use it to sbumit a new job, but it helps to undertand how various parts work together).
 
-  2. Execute the script from a command prompt with your own project ID, the executable jar file, the exp file name, and other parameters, as in the following example:
+  2. Execute the script from a command prompt with your own project ID, the executable jar file, the expression file name, TFS file name, and p-value, as in the following example:
 
-    ./aracne.java.sh wise-mantra-567 Aracne.jar bcell-100.tab.txt GO_3700plus_TFs_HG-U95Av2.txt 0.00000001 "--seed 1"
+    `./aracne.java.sh wise-mantra-567 Aracne.jar bcell-100.tab.txt GO_3700plus_TFs_HG-U95Av2.txt 0.00000001`
  
   This script is developed and tested on cygwin on Windows, and it should work with most flavors of Linux/UNIX. Google Cloud unitily (gcloud command) also supports native Windows command line, cmd.exe, but the script has to be ported or re-written to Windows script.
-  3. Check the result from the directory called *results*. If the job succeeds, you will see a file *results/result.txt*, which is the main output of the ARACNe java program.
+  3. Check the result from the directory called *results*. If the job succeeds, you will see a file *results/finalNetwork_4col.tsv*, which is the final result, besides other output files.
   
 
 ## How to run CINDY
