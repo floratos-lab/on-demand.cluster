@@ -9,3 +9,7 @@ Because Google Cloud is under active development, it is a good idea to run `gclo
 
 ###Environment
 The scripts are tested using cygwin on Windows (GNU bash, version 4.1.17). I assume that they work the same way on any normal Linux/UNIX systems. You also must have Google Cloud SDK installed before being able to run the scripts.
+
+####References
+* [qsun man page](http://gridscheduler.sourceforge.net/htmlman/htmlman1/qsub.html)
+* [Sun Grid Engine queue configuration file format](http://gridscheduler.sourceforge.net/htmlman/htmlman5/queue_conf.html)
