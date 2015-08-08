@@ -28,9 +28,10 @@ source cluster_properties.sh > /dev/null
 ./cluster_setup.sh up-full > /dev/null
 gcloud config set compute/zone $MASTER_NODE_ZONE
 
-gcloud compute copy-files ./install.sge.master.sh $MASTER_NODE_NAME_PATTERN:~/.
+gcloud compute copy-files ./install.sge.master.sh ./cluster_properties.sh $MASTER_NODE_NAME_PATTERN:~/.
 echo ">>> setting up SGE master ..."
 gcloud compute ssh --ssh-flag="-o LogLevel=ERROR" $MASTER_NODE_NAME_PATTERN --command ./install.sge.master.sh &> /dev/null
+rc=$?; if [[ $rc != 0 ]]; then ./cluster_setup.sh down-full; exit $rc; fi
 echo ">>> done setting up the master: $MASTER_NODE_NAME_PATTERN"
 readonly INSTANCE_NAME=$MASTER_NODE_NAME_PATTERN
 
@@ -48,6 +49,7 @@ for ((i = 0; i < $WORKER_NODE_COUNT; i++)) do
     echo "Configuring worker node $(worker_node_name $i)"
     gcloud compute copy-files ./install.worker.sh $(worker_node_name $i):~/.
     gcloud compute ssh $(worker_node_name $i) --command ./install.worker.sh &> /dev/null
+    rc=$?; if [[ $rc != 0 ]]; then ./cluster_setup.sh down-full; exit $rc; fi
 
     gcloud compute copy-files $EXECUTABLE_JAR $EXP_FILE $TFS_FILE $(worker_node_name $i):~/.
 done

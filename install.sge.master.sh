@@ -1,5 +1,7 @@
 # this script installs and configures SGE on the master node of the cluster
 # it include two major parts: (1) install the SGE packages (2) configure the mater node
+source ./cluster_properties.sh
+rc=$?; if [[ $rc != 0 ]]; then exit $rc; fi
 
 # part 1: installation of SGE packages
 sudo DEBIAN_FRONTEND=noninteractive apt-get -o Acquire::Check-Valid-Until=false update
@@ -81,10 +83,10 @@ rm ./grid
 
 qconf -aattr queue slots "4, [$(hostname)=3]" main.q
 
-qconf -as gwb-grid-ww-0
-qconf -as gwb-grid-ww-1
-qconf -aattr hostgroup hostlist gwb-grid-ww-0 @allhosts
-qconf -aattr hostgroup hostlist gwb-grid-ww-1 @allhosts
+for ((i = 0; i < "$WORKER_NODE_COUNT"; i++)) do
+	qconf -as gwb-grid-ww-"$i"
+	qconf -aattr hostgroup hostlist gwb-grid-ww-"$i" @allhosts
+done
 
 # install Java
 sudo DEBIAN_FRONTEND=noninteractive apt-get -y install openjdk-7-jre
