@@ -169,7 +169,7 @@ function add_master_node() {
     exec \
       gcloud compute instances create "$name" \
         --zone=${MASTER_NODE_ZONE} \
-        --disk name="${boot_disk}" boot=yes \
+        --disk name="${boot_disk}",boot=yes \
         --disk name="${data_disk}" \
         --machine-type ${MASTER_NODE_MACHINE_TYPE} \
         --network ${CLUSTER_NETWORK} \
@@ -193,7 +193,7 @@ function add_worker_node() {
     exec \
       gcloud compute instances create "$name" \
         --zone=${WORKER_NODE_ZONE} \
-        --disk name="${boot_disk}" boot=yes \
+        --disk name="${boot_disk}",boot=yes \
         --disk name="${data_disk}" \
         --machine-type ${WORKER_NODE_MACHINE_TYPE} \
         --network ${CLUSTER_NETWORK} \

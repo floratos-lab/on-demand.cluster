@@ -52,7 +52,7 @@ readonly WORKER_NODE_SCOPE=
 
 # Specify the number of each node type
 readonly MASTER_NODE_COUNT=1
-readonly WORKER_NODE_COUNT=2
+readonly WORKER_NODE_COUNT=4
 
 # Output file on the local workstation for logs
 readonly SCRIPT_LOG_DIR=/tmp
