@@ -40,7 +40,7 @@ This step is a little annoying, but you only need to do it once.
 
 ## How to run CINDY
 
- 1. Download the script cincy.sh and other scripts. Get Cindy.jar. 
+ 1. Download the script cincy.sh and other scripts under <a href="https://github.com/geworkbench-group/on-demand.cluster/tree/master/cindy">the cindy subdirectory</a> of this repository. Get Cindy.jar from the CINDY developers. 
  2. Execute the script from a command line interface with your own project ID, net file, TFS file, and MOD file, as in the following example:
  
   `./cindy.sh wise-mantra-567 net_323.dat pc_10_tfs.txt pc_10_sigs.txt`
