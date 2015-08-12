@@ -1,6 +1,9 @@
 results/*
+cindy/output/*
 aracne2
 *.exp
+*.jar
+qsub.job.sh
 usage.txt
 hub.txt
 config_threshold.txt
